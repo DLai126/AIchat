@@ -2,7 +2,7 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>戀愛系 • Persona - AI 伴侶</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
@@ -14,23 +14,74 @@
             --primary-pink: #f472b6;
             --soft-pink: #fce7f3;
             --deep-rose: #be185d;
+            --glass-border: rgba(255, 255, 255, 0.4);
+            --glass-bg: rgba(255, 255, 255, 0.25);
+            --glass-shadow: 0 8px 32px 0 rgba(236, 72, 153, 0.15);
+            
+            /* VIP Mode Variables */
+            --vip-bg: #1a0510;
+            --vip-panel: rgba(30, 10, 20, 0.7);
+            --vip-border: rgba(255, 0, 128, 0.3);
+            --vip-accent: #ff0080;
+            --vip-text: #fce7f3;
         }
 
         body {
             font-family: 'Mali', 'Zen Maru Gothic', 'Quicksand', 'Noto Sans TC', sans-serif;
-            background-color: #fff0f5;
+            background-color: #fdf2f8; 
             background-image: 
-                radial-gradient(#fbcfe8 15%, transparent 16%),
-                radial-gradient(#fbcfe8 15%, transparent 16%);
-            background-size: 40px 40px;
-            background-position: 0 0, 20px 20px;
+                radial-gradient(circle at 10% 20%, rgba(244, 114, 182, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(251, 207, 232, 0.2) 0%, transparent 20%);
             overflow: hidden;
+            transition: background 0.5s ease;
+        }
+
+        /* VIP Mode Global Overrides */
+        body.vip-mode {
+            background-color: #0f0205;
+            background-image: 
+                radial-gradient(circle at 50% 0%, rgba(120, 0, 60, 0.4) 0%, transparent 50%),
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 0, 128, 0.03) 2px, rgba(255, 0, 128, 0.03) 4px);
+            color: #ffccdd;
+        }
+
+        /* 強化版玻璃擬態容器 */
+        .glass-panel {
+            background: var(--glass-bg);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--glass-border);
+            box-shadow: var(--glass-shadow);
+            transition: all 0.5s ease;
+        }
+
+        /* VIP Panel Override */
+        body.vip-mode .glass-panel {
+            background: var(--vip-panel);
+            border: 1px solid var(--vip-border);
+            box-shadow: 0 0 20px rgba(255, 0, 128, 0.15), inset 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        /* 聊天背景紋理加深 */
+        .chat-bg-pattern {
+            background-color: rgba(255, 240, 245, 0.6); 
+            background-image: 
+                linear-gradient(rgba(244, 114, 182, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(244, 114, 182, 0.05) 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        body.vip-mode .chat-bg-pattern {
+            background-color: transparent;
+            background-image: none;
         }
 
         ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.5); }
-        ::-webkit-scrollbar-thumb { background: #f9a8d4; border-radius: 10px; }
-        ::-webkit-scrollbar-thumb:hover { background: #ec4899; }
+        ::-webkit-scrollbar-track { background: rgba(255, 255, 255, 0.1); }
+        ::-webkit-scrollbar-thumb { background: rgba(244, 114, 182, 0.5); border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: rgba(236, 72, 153, 0.8); }
+        
+        body.vip-mode ::-webkit-scrollbar-thumb { background: rgba(255, 0, 128, 0.5); }
 
         .scan-line {
             width: 100%; height: 2px; background: #ec4899;
@@ -54,22 +105,78 @@
             transform: translateX(10px);
             transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
         }
+
+        /* 華麗氣泡樣式 - 一般模式 */
+        .bubble-user {
+            background: linear-gradient(135deg, #f472b6 0%, #be185d 100%);
+            box-shadow: 0 4px 15px rgba(190, 24, 93, 0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+            position: relative;
+            overflow: hidden;
+        }
+        .bubble-user::after {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 40%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.2), transparent);
+            pointer-events: none;
+        }
+
+        .bubble-bot {
+            background: rgba(255, 255, 255, 0.65);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+            box-shadow: 0 4px 12px rgba(236, 72, 153, 0.08);
+            color: #4b5563;
+        }
+
+        /* VIP Mode Bubbles */
+        body.vip-mode .bubble-user {
+            background: linear-gradient(135deg, #a21caf 0%, #701a75 100%);
+            box-shadow: 0 0 15px rgba(216, 27, 96, 0.4);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            color: #ffe4e6;
+        }
         
+        body.vip-mode .bubble-bot {
+            background: rgba(40, 10, 30, 0.7);
+            border: 1px solid rgba(255, 0, 128, 0.4);
+            box-shadow: 0 0 15px rgba(255, 0, 128, 0.1);
+            color: #fbcfe8;
+        }
+        
+        body.vip-mode .narrative-text {
+            color: #f472b6;
+            opacity: 0.7;
+        }
+
         .fancy-border {
-            border: 4px solid #fff;
-            outline: 4px dashed #fbcfe8;
-            box-shadow: 0 20px 50px -12px rgba(236, 72, 153, 0.25);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+            outline: none;
+            box-shadow: 
+                0 0 0 4px rgba(251, 207, 232, 0.3),
+                0 20px 50px -12px rgba(236, 72, 153, 0.25);
+        }
+        
+        body.vip-mode .fancy-border {
+            border: 1px solid rgba(255, 0, 128, 0.3);
+            box-shadow: 
+                0 0 0 2px rgba(80, 0, 40, 0.5),
+                0 0 30px rgba(255, 0, 128, 0.2);
         }
 
         .narrative-text {
-            color: #9ca3af;
+            color: #9333ea;
             font-size: 0.9em;
             font-style: italic;
+            opacity: 0.8;
         }
 
         .option-chip {
             transition: all 0.2s;
-            border: 1px solid #fbcfe8;
+            border: 1px solid rgba(244, 114, 182, 0.3);
+            background: rgba(255, 255, 255, 0.6);
         }
         .option-chip:hover {
             transform: translateY(-2px);
@@ -80,17 +187,17 @@
             background: linear-gradient(135deg, #ec4899, #db2777);
             color: white;
             border-color: transparent;
-            box-shadow: 0 2px 5px rgba(236, 72, 153, 0.3);
+            box-shadow: 0 4px 10px rgba(236, 72, 153, 0.4);
         }
         
         .history-item:hover {
-            background-color: #fff5f7;
+            background-color: rgba(255, 255, 255, 0.8);
             transform: translateX(2px);
         }
 
         .floating-icon {
             position: absolute;
-            opacity: 0.15;
+            opacity: 0.2;
             animation: float 6s ease-in-out infinite;
             pointer-events: none;
             z-index: 0;
@@ -115,8 +222,9 @@
         }
 
         .suggestion-chip {
-            background: rgba(255, 255, 255, 0.9);
-            border: 1px solid #f9a8d4;
+            background: rgba(255, 255, 255, 0.75);
+            backdrop-filter: blur(4px);
+            border: 1px solid rgba(249, 168, 212, 0.5);
             color: #db2777;
             padding: 6px 12px;
             border-radius: 20px;
@@ -128,17 +236,44 @@
             animation: slideUp 0.3s ease-out;
         }
         .suggestion-chip:hover {
-            background: #fce7f3;
+            background: #fff;
             transform: translateY(-2px);
-            box-shadow: 0 4px 6px rgba(236, 72, 153, 0.2);
+            box-shadow: 0 4px 8px rgba(236, 72, 153, 0.2);
         }
-        @keyframes slideUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        
+        body.vip-mode .suggestion-chip {
+            background: rgba(50, 10, 30, 0.8);
+            border-color: #831843;
+            color: #fbcfe8;
+        }
+        body.vip-mode .suggestion-chip:hover {
+            background: #831843;
+            color: white;
+        }
+        
+        /* Hostess Card Styles */
+        .hostess-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 2px solid transparent;
+        }
+        .hostess-card:hover {
+            transform: translateY(-5px);
+            border-color: #d946ef;
+            box-shadow: 0 10px 30px -5px rgba(217, 70, 239, 0.4);
+        }
+        
+        .vip-input {
+            background: rgba(0,0,0,0.5); 
+            border: 1px solid #d946ef; 
+            color: white;
+        }
+        .vip-input:focus {
+            outline: none;
+            box-shadow: 0 0 10px #d946ef;
         }
     </style>
 </head>
-<body class="h-screen flex flex-col font-sans overflow-hidden text-gray-700 relative">
+<body class="h-screen flex flex-col font-sans overflow-hidden text-gray-700 relative selection:bg-pink-200">
 
     <!-- 背景裝飾 -->
     <i class="fa-solid fa-heart floating-icon text-pink-400 text-4xl" style="top: 10%; left: 5%; animation-delay: 0s;"></i>
@@ -147,56 +282,126 @@
     <i class="fa-solid fa-music floating-icon text-purple-300 text-2xl" style="bottom: 30%; right: 5%; animation-delay: 1.5s;"></i>
 
     <!-- Profile Modal -->
-    <div id="profile-modal" class="fixed inset-0 bg-black/70 z-50 flex items-center justify-center p-4 backdrop-blur-sm hidden transition-opacity" onclick="closeProfile(event)">
-        <div class="bg-white rounded-[2rem] shadow-2xl max-w-sm w-full relative overflow-hidden flex flex-col max-h-[85vh] animate-popIn" onclick="event.stopPropagation()">
+    <div id="profile-modal" class="fixed inset-0 bg-gray-900/40 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden transition-opacity" onclick="closeProfile(event)">
+        <div class="glass-panel bg-white/90 rounded-[2rem] shadow-2xl max-w-sm w-full relative overflow-hidden flex flex-col max-h-[85vh] animate-popIn" onclick="event.stopPropagation()">
             <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-black/20 hover:bg-black/40 text-white backdrop-blur-md flex items-center justify-center transition">
                 <i class="fa-solid fa-xmark"></i>
             </button>
             <div class="relative h-64 shrink-0">
                 <img id="profile-img-large" class="w-full h-full object-cover">
-                <div class="absolute inset-0 profile-bg-gradient"></div>
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
                 <div class="absolute bottom-4 left-6 text-white">
-                    <h2 class="text-2xl font-bold flex items-end gap-2">
+                    <h2 class="text-2xl font-bold flex items-end gap-2 drop-shadow-md">
                         <span id="profile-name-display">Name</span> 
                         <span id="profile-age-display" class="text-lg font-normal opacity-90">24</span>
                     </h2>
-                    <p class="text-sm opacity-90 flex items-center gap-1">
+                    <p class="text-sm opacity-90 flex items-center gap-1 drop-shadow-sm">
                         <i class="fa-solid fa-location-dot text-pink-400"></i> <span id="profile-location-display">Taipei</span>
                     </p>
                 </div>
             </div>
-            <div class="p-6 overflow-y-auto custom-scrollbar bg-white flex-1">
+            <div class="p-6 overflow-y-auto custom-scrollbar bg-white/50 flex-1">
                 <div class="mb-5">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase mb-2 tracking-wider">關於我</h3>
-                    <p id="profile-bio-display" class="text-gray-700 leading-relaxed text-sm">Loading bio...</p>
+                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">關於我</h3>
+                    <p id="profile-bio-display" class="text-gray-800 leading-relaxed text-sm">Loading bio...</p>
                 </div>
                 <div class="mb-5">
-                    <h3 class="text-xs font-bold text-gray-400 uppercase mb-2 tracking-wider">興趣</h3>
+                    <h3 class="text-xs font-bold text-gray-500 uppercase mb-2 tracking-wider">興趣</h3>
                     <div id="profile-interests-display" class="flex flex-wrap gap-2"></div>
                 </div>
-                <div class="bg-pink-50 rounded-xl p-4 border border-pink-100">
+                <div class="bg-pink-50/60 rounded-xl p-4 border border-pink-100/50">
                     <h3 class="text-xs font-bold text-pink-500 uppercase mb-1 tracking-wider flex items-center gap-1">
                         <i class="fa-solid fa-heart"></i> 我們的關係
                     </h3>
                     <p id="profile-relation-display" class="text-pink-700 font-medium text-sm">Loading...</p>
                 </div>
             </div>
-            <div class="p-4 border-t border-gray-100 bg-gray-50 flex justify-center">
-                <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-2.5 rounded-full font-bold shadow-lg shadow-pink-200 transform hover:scale-105 transition active:scale-95 text-sm">
+            <div class="p-4 border-t border-gray-100/50 bg-white/40 flex justify-center">
+                <button onclick="document.getElementById('profile-modal').classList.add('hidden')" class="bg-gradient-to-r from-pink-500 to-rose-500 text-white px-8 py-2.5 rounded-full font-bold shadow-lg shadow-pink-200/50 transform hover:scale-105 transition active:scale-95 text-sm border border-white/20">
                     發送訊息 <i class="fa-regular fa-paper-plane ml-1"></i>
                 </button>
             </div>
         </div>
     </div>
 
+    <!-- Image Gen Modal -->
+    <div id="image-gen-modal" class="fixed inset-0 bg-gray-900/40 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden transition-opacity">
+        <div class="glass-panel bg-white/95 rounded-[2rem] shadow-2xl max-w-sm w-full border border-pink-200/50 relative overflow-hidden flex flex-col">
+            <div class="p-6 relative z-10 text-center bg-white/30">
+                <button onclick="document.getElementById('image-gen-modal').classList.add('hidden')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 hover:bg-pink-100 text-gray-400 hover:text-pink-600 flex items-center justify-center transition z-50 shadow-sm border border-pink-100">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+                <div class="w-14 h-14 bg-gradient-to-tr from-pink-400 to-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-lg animate-pulse border-4 border-white">
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800 tracking-wide mb-1">AI 形象生成</h2>
+                <p class="text-xs text-pink-500 font-medium">描述你想遇見的對象...</p>
+            </div>
+            <div class="px-6 py-4 relative z-10">
+                <textarea id="image-prompt" rows="3" class="w-full bg-white/80 border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-inner resize-none mb-3" placeholder="例如：一位短髮俏麗的咖啡廳店員，穿著圍裙，陽光灑在臉上..."></textarea>
+                <div class="text-[10px] text-gray-400 mb-2 flex items-center gap-1">
+                    <i class="fa-solid fa-circle-info"></i> 系統會自動優化你的描述
+                </div>
+            </div>
+            <div class="p-6 pt-0 shrink-0 bg-white/30 z-10">
+                <button onclick="generatePersonaImage()" id="gen-btn" class="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white font-bold py-3 rounded-xl transition shadow-lg shadow-pink-200/50 hover:opacity-90 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paint-brush"></i> 開始生成
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Nightclub Selection Modal -->
+    <div id="nightclub-modal" class="fixed inset-0 bg-black/80 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden transition-opacity">
+        <div class="glass-panel bg-gray-900/80 rounded-[2rem] shadow-2xl w-full max-w-4xl border border-purple-500/30 relative flex flex-col max-h-[90vh] overflow-hidden">
+            <!-- Header -->
+            <div class="p-6 border-b border-purple-500/20 flex justify-between items-center bg-black/40 shrink-0">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-purple-600 to-pink-600 flex items-center justify-center text-white shadow-[0_0_15px_rgba(236,72,153,0.5)]">
+                        <i class="fa-solid fa-champagne-glasses"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-xl font-bold text-white tracking-wide">Nightclub VIP</h2>
+                        <p class="text-xs text-purple-300">請挑選今晚的伴侶</p>
+                    </div>
+                </div>
+                <button onclick="closeNightclubMode()" class="w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            
+            <!-- Cards Container -->
+            <div class="p-6 overflow-y-auto custom-scrollbar flex-1 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+                <div id="hostess-container" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Cards will be injected here -->
+                    <div class="col-span-1 md:col-span-3 flex justify-center items-center py-20 text-purple-300 flex-col gap-4">
+                        <i class="fa-solid fa-circle-notch fa-spin text-4xl"></i>
+                        <p>正在安排人選...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer: Custom Request -->
+            <div class="p-6 border-t border-purple-500/20 bg-black/40 flex flex-col md:flex-row justify-between items-center gap-4 shrink-0">
+                <div class="flex items-center gap-2 w-full md:w-auto flex-1">
+                    <span class="text-purple-300 text-sm whitespace-nowrap"><i class="fa-solid fa-bell-concierge mr-1"></i> 點檯服務:</span>
+                    <input type="text" id="hostess-pref" placeholder="例：20歲的金髮白人女生" class="vip-input px-4 py-2 rounded-full text-sm w-full md:w-64 transition">
+                </div>
+                <button onclick="refreshHostesses()" id="refresh-hostess-btn" class="w-full md:w-auto px-8 py-2.5 rounded-full bg-gradient-to-r from-purple-700 to-pink-700 text-white hover:from-purple-600 hover:to-pink-600 transition flex items-center justify-center gap-2 font-bold shadow-[0_0_15px_rgba(168,85,247,0.4)]">
+                    <i class="fa-solid fa-bell"></i> 叫人來選
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Relationship Report Modal -->
-    <div id="relation-report-modal" class="fixed inset-0 bg-rose-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm hidden transition-opacity">
-        <div class="bg-white/95 backdrop-blur rounded-[2rem] shadow-2xl max-w-sm w-full border-4 border-rose-200 relative overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-6 pb-2 shrink-0 relative z-10 text-center bg-white/50 backdrop-blur-sm">
+    <div id="relation-report-modal" class="fixed inset-0 bg-rose-900/30 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden transition-opacity">
+        <div class="glass-panel bg-white/95 rounded-[2rem] shadow-2xl max-w-sm w-full border border-rose-200/50 relative overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="p-6 pb-2 shrink-0 relative z-10 text-center bg-white/30">
                 <button onclick="document.getElementById('relation-report-modal').classList.add('hidden')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 hover:bg-rose-100 text-gray-400 hover:text-rose-600 flex items-center justify-center transition z-50 shadow-sm border border-rose-100">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
-                <div class="w-14 h-14 bg-gradient-to-tr from-rose-400 to-pink-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-lg animate-pulse">
+                <div class="w-14 h-14 bg-gradient-to-tr from-rose-400 to-pink-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-lg animate-pulse border-4 border-white">
                     <i class="fa-solid fa-heart-crack"></i>
                 </div>
                 <h2 class="text-xl font-bold text-gray-800 tracking-wide mb-1">戀愛關係診斷書</h2>
@@ -207,8 +412,8 @@
                     <i class="fa-solid fa-circle-notch fa-spin text-rose-400 text-3xl"></i>
                 </div>
             </div>
-            <div class="p-6 pt-2 shrink-0 bg-white/50 backdrop-blur-sm z-10">
-                <button onclick="document.getElementById('relation-report-modal').classList.add('hidden')" class="w-full bg-slate-100 hover:bg-slate-200 text-gray-600 font-bold py-3 rounded-xl transition border border-slate-200">
+            <div class="p-6 pt-2 shrink-0 bg-white/30 z-10">
+                <button onclick="document.getElementById('relation-report-modal').classList.add('hidden')" class="w-full bg-slate-100/80 hover:bg-slate-200/80 text-gray-600 font-bold py-3 rounded-xl transition border border-slate-200/50">
                     收下建議
                 </button>
             </div>
@@ -216,13 +421,13 @@
     </div>
 
     <!-- Mind Reader Modal -->
-    <div id="mind-reader-modal" class="fixed inset-0 bg-purple-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm hidden transition-opacity">
-        <div class="bg-white/95 backdrop-blur rounded-[2rem] shadow-2xl max-w-sm w-full border-4 border-purple-200 relative overflow-hidden flex flex-col max-h-[85vh]">
-            <div class="p-6 pb-2 shrink-0 relative z-10 text-center bg-white/50 backdrop-blur-sm">
+    <div id="mind-reader-modal" class="fixed inset-0 bg-purple-900/30 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden transition-opacity">
+        <div class="glass-panel bg-white/95 rounded-[2rem] shadow-2xl max-w-sm w-full border border-purple-200/50 relative overflow-hidden flex flex-col max-h-[85vh]">
+            <div class="p-6 pb-2 shrink-0 relative z-10 text-center bg-white/30">
                 <button onclick="document.getElementById('mind-reader-modal').classList.add('hidden')" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-white/80 hover:bg-purple-100 text-gray-400 hover:text-purple-600 flex items-center justify-center transition z-50 shadow-sm border border-purple-100">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
-                <div class="w-14 h-14 bg-gradient-to-tr from-purple-400 to-indigo-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-lg animate-pulse">
+                <div class="w-14 h-14 bg-gradient-to-tr from-purple-400 to-indigo-500 text-white rounded-full flex items-center justify-center mx-auto mb-3 text-2xl shadow-lg animate-pulse border-4 border-white">
                     <i class="fa-solid fa-brain"></i>
                 </div>
                 <h2 class="text-xl font-bold text-gray-800 tracking-wide mb-1">角色內心獨白</h2>
@@ -233,8 +438,8 @@
                     <i class="fa-solid fa-circle-notch fa-spin text-purple-400 text-3xl"></i>
                 </div>
             </div>
-            <div class="p-6 pt-2 shrink-0 bg-white/50 backdrop-blur-sm z-10">
-                <button onclick="document.getElementById('mind-reader-modal').classList.add('hidden')" class="w-full bg-slate-100 hover:bg-slate-200 text-gray-600 font-bold py-3 rounded-xl transition border border-slate-200">
+            <div class="p-6 pt-2 shrink-0 bg-white/30 z-10">
+                <button onclick="document.getElementById('mind-reader-modal').classList.add('hidden')" class="w-full bg-slate-100/80 hover:bg-slate-200/80 text-gray-600 font-bold py-3 rounded-xl transition border border-slate-200/50">
                     關閉視窗
                 </button>
             </div>
@@ -242,17 +447,17 @@
     </div>
 
     <!-- History Modal -->
-    <div id="history-modal" class="fixed inset-0 bg-pink-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm hidden transition-opacity">
-        <div class="bg-white rounded-[2rem] shadow-2xl max-w-md w-full border-4 border-pink-100 relative flex flex-col max-h-[80vh] overflow-hidden">
-            <div class="p-5 flex justify-between items-center border-b border-dashed border-pink-200 bg-pink-50/50 shrink-0">
+    <div id="history-modal" class="fixed inset-0 bg-pink-900/30 z-50 flex items-center justify-center p-4 backdrop-blur-md hidden transition-opacity">
+        <div class="glass-panel bg-white/95 rounded-[2rem] shadow-2xl max-w-md w-full border border-pink-100/50 relative flex flex-col max-h-[80vh] overflow-hidden">
+            <div class="p-5 flex justify-between items-center border-b border-dashed border-pink-200 bg-pink-50/30 shrink-0">
                 <h2 class="text-xl font-bold text-gray-800 flex items-center"><i class="fa-solid fa-book-heart text-pink-500 mr-2"></i> 回憶錄</h2>
                 <button onclick="document.getElementById('history-modal').classList.add('hidden')" class="w-8 h-8 rounded-full bg-white hover:bg-pink-100 text-gray-400 hover:text-pink-500 flex items-center justify-center transition shadow-sm">
                     <i class="fa-solid fa-xmark"></i>
                 </button>
             </div>
-            <div id="history-list" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar bg-white"></div>
-            <div class="p-5 border-t border-pink-100 bg-white shrink-0">
-                <button onclick="createNewChat()" class="w-full bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-3.5 rounded-2xl transition transform active:scale-95 shadow-lg shadow-pink-100 flex items-center justify-center">
+            <div id="history-list" class="flex-1 overflow-y-auto p-4 space-y-2 custom-scrollbar bg-white/40"></div>
+            <div class="p-5 border-t border-pink-100/50 bg-white/50 shrink-0">
+                <button onclick="createNewChat()" class="w-full bg-gradient-to-r from-pink-400 to-rose-400 hover:from-pink-500 hover:to-rose-500 text-white font-bold py-3.5 rounded-2xl transition transform active:scale-95 shadow-lg shadow-pink-100/50 flex items-center justify-center border border-white/20">
                     <i class="fa-solid fa-sparkles mr-2"></i> 邂逅新對象
                 </button>
             </div>
@@ -260,15 +465,15 @@
     </div>
 
     <!-- API Key & Settings Modal -->
-    <div id="api-modal" class="fixed inset-0 bg-pink-900/60 z-50 flex items-center justify-center p-4 backdrop-blur-sm">
-        <div class="bg-white/95 backdrop-blur rounded-[2.5rem] shadow-2xl max-w-md w-full p-8 space-y-5 border-4 border-white ring-4 ring-pink-100 relative overflow-hidden flex flex-col max-h-[90vh]">
+    <div id="api-modal" class="fixed inset-0 bg-pink-900/30 z-50 flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="glass-panel bg-white/90 rounded-[2.5rem] shadow-2xl max-w-md w-full p-8 space-y-5 border-4 border-white/40 ring-4 ring-pink-100/30 relative overflow-hidden flex flex-col max-h-[90vh]">
             <div class="p-8 pb-4 overflow-y-auto custom-scrollbar relative z-10">
                 <div class="text-center mb-6">
-                    <div class="w-16 h-16 bg-gradient-to-tr from-pink-400 to-rose-500 text-white rounded-2xl rotate-3 flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg transform hover:rotate-6 transition duration-300">
+                    <div class="w-16 h-16 bg-gradient-to-tr from-pink-400 to-rose-500 text-white rounded-2xl rotate-3 flex items-center justify-center mx-auto mb-4 text-3xl shadow-lg transform hover:rotate-6 transition duration-300 border-2 border-white">
                         <i class="fa-solid fa-heart-pulse"></i>
                     </div>
                     <h2 class="text-2xl font-bold text-gray-800 tracking-wide">戀愛系 • Persona</h2>
-                    <p class="text-sm text-pink-500 mt-1 font-medium bg-pink-50 inline-block px-3 py-1 rounded-full">打造專屬於你的 AI 伴侶</p>
+                    <p class="text-sm text-pink-500 mt-1 font-medium bg-pink-50/80 inline-block px-3 py-1 rounded-full border border-pink-100">打造專屬於你的 AI 伴侶</p>
                 </div>
                 <div class="space-y-4">
                     <div>
@@ -276,15 +481,15 @@
                         <div class="relative">
                             <i class="fa-solid fa-key absolute left-4 top-3.5 text-gray-300"></i>
                             <input type="password" id="api-key-input" placeholder="AIzaSy..." 
-                                   class="w-full pl-10 pr-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-pink-400 focus:ring-4 focus:ring-pink-50 outline-none transition text-sm bg-white shadow-sm">
+                                   class="w-full pl-10 pr-4 py-3 rounded-2xl border-2 border-gray-100 focus:border-pink-400 focus:ring-4 focus:ring-pink-50 outline-none transition text-sm bg-white/80 shadow-sm">
                         </div>
                     </div>
                     
                     <!-- Voice Settings Section -->
-                    <div class="bg-pink-50 rounded-2xl p-4 border border-pink-100 space-y-3">
+                    <div class="bg-pink-50/60 rounded-2xl p-4 border border-pink-100 space-y-3">
                         <div class="flex items-center justify-between mb-2">
                             <label class="text-sm font-bold text-pink-600 flex items-center gap-2">
-                                <i class="fa-solid fa-microphone-lines"></i> 語音設定 (Gemini AI)
+                                <i class="fa-solid fa-microphone-lines"></i> 語音設定
                             </label>
                             <div class="flex gap-2 items-center">
                                 <label class="relative inline-flex items-center cursor-pointer" title="強制使用 AI 語音，失敗時不降級">
@@ -302,7 +507,7 @@
                         
                         <div class="space-y-2">
                             <label class="block text-xs font-bold text-gray-400 uppercase">選擇聲音 (Gemini 原音)</label>
-                            <select id="voice-selector" class="w-full px-3 py-2 rounded-xl border border-pink-200 bg-white text-sm focus:outline-none text-gray-700 font-sans" onchange="handleVoiceChange(this.value)">
+                            <select id="voice-selector" class="w-full px-3 py-2 rounded-xl border border-pink-200 bg-white/80 text-sm focus:outline-none text-gray-700 font-sans" onchange="handleVoiceChange(this.value)">
                                 <optgroup label="👧 蘿莉/小孩">
                                     <option value="Puck">Puck (🧸 頑皮/中性)</option>
                                     <option value="Erinome">🎈 Erinome (稚嫩)</option>
@@ -336,13 +541,13 @@
                         <select id="fetched-models" class="w-full px-5 py-3 rounded-2xl border-2 border-green-100 bg-green-50/50 text-sm focus:outline-none font-medium text-green-700 appearance-none cursor-pointer">
                         </select>
                     </div>
-                    <div id="connection-status" class="text-xs p-3 rounded-xl bg-gray-50 text-gray-400 text-center min-h-[2em] flex items-center justify-center">
+                    <div id="connection-status" class="text-xs p-3 rounded-xl bg-gray-50/50 text-gray-400 text-center min-h-[2em] flex items-center justify-center">
                         準備就緒
                     </div>
                 </div>
             </div>
             <div class="p-8 pt-0 relative z-10 shrink-0">
-                <button onclick="scanAndConnect()" id="action-btn" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-4 rounded-2xl transition transform active:scale-95 shadow-lg shadow-pink-200">
+                <button onclick="scanAndConnect()" id="action-btn" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white font-bold py-4 rounded-2xl transition transform active:scale-95 shadow-lg shadow-pink-200 border border-white/20">
                     開始配對 <i class="fa-solid fa-arrow-right ml-1"></i>
                 </button>
                 <button onclick="forceEntry()" id="force-btn" class="hidden w-full text-gray-400 hover:text-pink-500 text-xs underline py-2 mt-2 text-center block mx-auto">
@@ -355,29 +560,30 @@
     </div>
 
     <!-- Header -->
-    <header class="bg-white/80 backdrop-blur-md shadow-sm z-10 shrink-0 border-b border-white sticky top-0">
+    <header class="bg-white/40 backdrop-blur-md shadow-sm z-10 shrink-0 border-b border-white/30 sticky top-0 transition-colors duration-500" id="main-header">
         <div class="max-w-3xl mx-auto px-4 py-3 flex justify-between items-center">
             <div class="flex items-center gap-2">
-                <div class="w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-lg flex items-center justify-center text-white shadow-sm">
+                <div class="w-8 h-8 bg-gradient-to-br from-pink-400 to-rose-500 rounded-lg flex items-center justify-center text-white shadow-md border border-white/20">
                     <i class="fa-solid fa-heart"></i>
                 </div>
-                <h1 class="text-lg font-bold text-gray-800 tracking-tight">PersonaChat</h1>
-                <span class="bg-pink-100 text-pink-600 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider" id="current-model-badge">AI</span>
+                <h1 class="text-lg font-bold text-gray-800 tracking-tight drop-shadow-sm transition-colors" id="app-title">PersonaChat</h1>
+                <span class="bg-pink-100/80 text-pink-600 px-2 py-0.5 rounded text-[10px] font-bold tracking-wider border border-pink-200" id="current-model-badge">AI</span>
             </div>
-            <div class="flex gap-2">
-                <button onclick="triggerPlotTwist()" id="plot-twist-btn" class="hidden w-9 h-9 rounded-full bg-yellow-50 border border-yellow-100 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-600 transition flex items-center justify-center shadow-sm relative group" title="隨機劇情 (Plot Twist)">
+            <!-- 手機版適配：gap-1.5 並允許 wrap -->
+            <div class="flex gap-1.5 md:gap-2 flex-wrap justify-end">
+                <button onclick="triggerPlotTwist()" id="plot-twist-btn" class="hidden w-8 h-8 md:w-9 md:h-9 rounded-full bg-yellow-50/80 border border-yellow-200 text-yellow-500 hover:bg-yellow-100 hover:text-yellow-600 transition flex items-center justify-center shadow-sm relative group" title="隨機劇情 (Plot Twist)">
                     <i class="fa-solid fa-dice"></i>
                 </button>
-                <button onclick="analyzeRelationship()" id="relation-btn" class="hidden w-9 h-9 rounded-full bg-rose-50 border border-rose-100 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center shadow-sm relative group" title="關係診斷書">
+                <button onclick="analyzeRelationship()" id="relation-btn" class="hidden w-8 h-8 md:w-9 md:h-9 rounded-full bg-rose-50/80 border border-rose-200 text-rose-500 hover:bg-rose-100 hover:text-rose-600 transition flex items-center justify-center shadow-sm relative group" title="關係診斷書">
                     <i class="fa-solid fa-chart-line"></i>
                 </button>
-                <button onclick="analyzeThought()" id="mind-read-btn" class="hidden w-9 h-9 rounded-full bg-purple-50 border border-purple-100 text-purple-500 hover:bg-purple-100 hover:text-purple-700 transition flex items-center justify-center shadow-sm relative group" title="讀心術 (分析內心想法)">
+                <button onclick="analyzeThought()" id="mind-read-btn" class="hidden w-8 h-8 md:w-9 md:h-9 rounded-full bg-purple-50/80 border border-purple-200 text-purple-500 hover:bg-purple-100 hover:text-purple-700 transition flex items-center justify-center shadow-sm relative group" title="讀心術 (分析內心想法)">
                     <i class="fa-solid fa-brain"></i>
                 </button>
-                <button onclick="openHistory()" class="w-9 h-9 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-pink-50 hover:text-pink-600 transition flex items-center justify-center shadow-sm" title="歷史紀錄">
+                <button onclick="openHistory()" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/80 border border-pink-100 text-pink-400 hover:bg-pink-50 hover:text-pink-600 transition flex items-center justify-center shadow-sm" title="歷史紀錄">
                     <i class="fa-solid fa-folder-open"></i>
                 </button>
-                <button onclick="document.getElementById('api-modal').classList.remove('hidden')" class="w-9 h-9 rounded-full bg-white border border-pink-100 text-pink-400 hover:bg-pink-50 hover:text-pink-600 transition flex items-center justify-center shadow-sm" title="設定">
+                <button onclick="document.getElementById('api-modal').classList.remove('hidden')" class="w-8 h-8 md:w-9 md:h-9 rounded-full bg-white/80 border border-pink-100 text-pink-400 hover:bg-pink-50 hover:text-pink-600 transition flex items-center justify-center shadow-sm" title="設定">
                     <i class="fa-solid fa-gear"></i>
                 </button>
             </div>
@@ -387,31 +593,53 @@
     <!-- Main Content -->
     <main class="flex-1 overflow-hidden relative w-full max-w-3xl mx-auto my-0 md:my-6 md:px-4 flex flex-col">
         
-        <div class="bg-white/85 backdrop-blur-sm shadow-xl rounded-[2rem] flex flex-col h-full overflow-hidden fancy-border relative transition-all duration-500">
+        <div id="main-panel" class="glass-panel rounded-[2rem] flex flex-col h-full overflow-hidden fancy-border relative transition-all duration-500">
             
             <!-- Setup Panel -->
-            <div id="setup-panel" class="p-6 md:p-8 flex flex-col h-full overflow-y-auto custom-scrollbar">
+            <div id="setup-panel" class="p-6 md:p-8 flex flex-col h-full overflow-y-auto custom-scrollbar bg-white/40">
                 <!-- 裝飾貼圖 -->
                 <div class="sticker" style="top: 10%; left: 5%;">✨</div>
                 <div class="sticker" style="top: 15%; right: 10%; transform: rotate(15deg);">💖</div>
 
-                <div class="flex-1 flex flex-col items-center justify-center min-h-[300px]">
-                    
+                <!-- Nightclub Entry (Now at the top and independent) -->
+                <div class="mb-8 p-1">
+                    <button onclick="openNightclubMode()" class="w-full bg-gradient-to-r from-purple-900 via-purple-700 to-pink-700 text-white py-4 rounded-2xl font-bold shadow-xl flex items-center justify-center gap-3 hover:scale-[1.02] transition border-2 border-purple-400/50 group relative overflow-hidden">
+                        <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000"></div>
+                        <i class="fa-solid fa-martini-glass-citrus text-2xl"></i> 
+                        <span class="text-lg">進入夜店/私人包廂模式</span>
+                        <span class="bg-pink-500 text-xs px-2 py-0.5 rounded-full ml-1 animate-pulse">HOT</span>
+                    </button>
+                    <p class="text-center text-xs text-gray-400 mt-2">無需照片，AI 為您安排專屬伴侶</p>
+                </div>
+
+                <div class="flex items-center gap-4 mb-6">
+                    <div class="h-px bg-gray-300 flex-1"></div>
+                    <span class="text-gray-400 text-xs font-bold tracking-wider">或是建立一般對話</span>
+                    <div class="h-px bg-gray-300 flex-1"></div>
+                </div>
+
+                <div class="flex-1 flex flex-col items-center justify-center min-h-[250px]">
                     <div class="relative group cursor-pointer w-56 h-56 transition-all duration-500 hover:scale-105" onclick="document.getElementById('file-upload').click()">
-                        <div class="absolute inset-0 bg-gradient-to-tr from-pink-100 to-white rounded-full border-4 border-dashed border-pink-300 group-hover:border-pink-500 transition-colors"></div>
+                        <div class="absolute inset-0 bg-gradient-to-tr from-pink-100 to-white rounded-full border-4 border-dashed border-pink-300 group-hover:border-pink-500 transition-colors shadow-inner"></div>
                         <div id="upload-hint" class="absolute inset-0 flex flex-col items-center justify-center text-pink-300 group-hover:text-pink-500 transition">
-                            <div class="bg-white p-4 rounded-full shadow-sm mb-3">
+                            <div class="bg-white p-4 rounded-full shadow-sm mb-3 border border-pink-50">
                                 <i class="fa-solid fa-camera-retro text-3xl text-pink-400"></i>
                             </div>
-                            <span class="text-sm font-bold tracking-wide bg-white/80 px-3 py-1 rounded-full">上傳對象照片</span>
+                            <span class="text-sm font-bold tracking-wide bg-white/80 px-3 py-1 rounded-full border border-pink-100">上傳對象照片</span>
                         </div>
                         <img id="preview-image" class="absolute inset-0 w-full h-full object-cover rounded-full hidden shadow-2xl border-4 border-white ring-4 ring-pink-100 transition-opacity duration-500">
                         <div id="scan-effect" class="scan-line rounded-full z-20"></div>
                     </div>
                     
+                    <div class="flex flex-col items-center gap-2 mt-4">
+                        <button onclick="document.getElementById('image-gen-modal').classList.remove('hidden')" class="text-xs text-pink-500 hover:text-pink-600 font-bold underline bg-pink-50 hover:bg-pink-100 px-4 py-2 rounded-full transition cursor-pointer">
+                            <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> 沒有照片？試試 AI 生成
+                        </button>
+                    </div>
+                    
                     <input type="file" id="file-upload" class="hidden" accept="image/*">
-                    <div id="analysis-status" class="mt-6 text-center h-auto min-h-[2rem] px-4 w-full font-medium text-pink-400 bg-pink-50/50 py-2 rounded-xl">
-                        請上傳一張照片，讓我分析他/她的特質...
+                    <div id="analysis-status" class="mt-4 text-center h-auto min-h-[2rem] px-4 w-full font-medium text-pink-400 bg-pink-50/50 py-2 rounded-xl border border-pink-100/50">
+                        請上傳或生成一張照片...
                     </div>
                 </div>
 
@@ -419,32 +647,32 @@
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div class="md:col-span-1">
                             <label class="flex items-center text-xs font-bold text-pink-400 uppercase mb-2 ml-1">
-                                <i class="fa-regular fa-id-card mr-1"></i> 暱稱 (請選擇或輸入)
+                                <i class="fa-regular fa-id-card mr-1"></i> 暱稱
                             </label>
                             <div id="name-suggestions" class="flex flex-wrap gap-2 mb-2 min-h-[2rem]"></div>
-                            <input type="text" id="p-name" class="w-full bg-white border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm" placeholder="例如：Alex">
+                            <input type="text" id="p-name" class="w-full bg-white/80 border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm" placeholder="例如：Alex">
                         </div>
                         <div class="md:col-span-1">
                             <label class="flex items-center text-xs font-bold text-pink-400 uppercase mb-2 ml-1">
                                 <i class="fa-solid fa-user-tag mr-1"></i> 身分 / 職業
                             </label>
-                            <input type="text" id="p-role" class="w-full bg-white border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm">
+                            <input type="text" id="p-role" class="w-full bg-white/80 border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm">
                         </div>
                     </div>
                     
                     <div>
                         <label class="flex items-center text-xs font-bold text-pink-400 uppercase mb-2 ml-1">
-                            <i class="fa-solid fa-heart-crack mr-1"></i> 我們的關係 (請選擇或輸入)
+                            <i class="fa-solid fa-heart-crack mr-1"></i> 我們的關係
                         </label>
                         <div id="relationship-suggestions" class="flex flex-wrap gap-2 mb-2 min-h-[2rem]"></div>
-                        <input type="text" id="p-relationship" class="w-full bg-white border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm" placeholder="例如：剛認識的鄰居、前男友">
+                        <input type="text" id="p-relationship" class="w-full bg-white/80 border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm" placeholder="例如：剛認識的鄰居、前男友">
                     </div>
 
                     <div>
                         <label class="flex items-center text-xs font-bold text-pink-400 uppercase mb-2 ml-1">
                             <i class="fa-solid fa-masks-theater mr-1"></i> 個性與語氣
                         </label>
-                        <input type="text" id="p-tone" class="w-full bg-white border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm">
+                        <input type="text" id="p-tone" class="w-full bg-white/80 border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm">
                     </div>
 
                     <!-- New Context Field -->
@@ -452,48 +680,48 @@
                         <label class="flex items-center text-xs font-bold text-pink-400 uppercase mb-2 ml-1">
                             <i class="fa-solid fa-book-open mr-1"></i> 劇情背景 / 當下處境 (選填)
                         </label>
-                        <textarea id="p-context" rows="2" class="w-full bg-white border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm resize-none" placeholder="例如：我們剛吵完架、正在海邊散步、今天是情人節...（留白則由 AI 自由發揮）"></textarea>
+                        <textarea id="p-context" rows="2" class="w-full bg-white/80 border border-pink-200 rounded-xl px-4 py-3 text-sm focus:border-pink-400 focus:ring-2 focus:ring-pink-100 outline-none transition text-gray-700 shadow-sm resize-none" placeholder="例如：我們剛吵完架、正在海邊散步、今天是情人節...（留白則由 AI 自由發揮）"></textarea>
                     </div>
 
-                    <button onclick="startChat()" id="start-btn" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white py-4 rounded-xl font-bold transition mt-2 shadow-lg shadow-pink-200 transform active:scale-[0.98] text-lg">
+                    <button onclick="startChat()" id="start-btn" class="w-full bg-gradient-to-r from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white py-4 rounded-xl font-bold transition mt-2 shadow-lg shadow-pink-200 transform active:scale-[0.98] text-lg border border-white/20">
                         <i class="fa-regular fa-paper-plane mr-2"></i> 開始對話
                     </button>
                 </div>
             </div>
 
             <!-- Chat Panel -->
-            <div id="chat-panel" class="hidden flex-col h-full bg-slate-50/30">
-                <div class="bg-white/90 border-b border-pink-100 px-6 py-4 flex items-center gap-4 shadow-sm backdrop-blur-md z-10 sticky top-0">
+            <div id="chat-panel" class="hidden flex-col h-full bg-white/10 backdrop-blur-sm">
+                <div class="bg-white/70 border-b border-pink-100/50 px-6 py-4 flex items-center gap-4 shadow-sm backdrop-blur-md z-10 sticky top-0 transition-colors duration-500" id="chat-header">
                     <div class="relative group cursor-pointer" onclick="showProfile()">
-                        <img id="chat-avatar" class="w-12 h-12 rounded-full object-cover border-2 border-pink-200 shadow-md transition-transform group-hover:scale-105">
+                        <img id="chat-avatar" class="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md transition-transform group-hover:scale-105">
                         <div class="absolute bottom-0 right-0 w-3.5 h-3.5 bg-green-400 border-2 border-white rounded-full"></div>
                     </div>
                     <div class="flex-1 min-w-0 cursor-pointer" onclick="showProfile()">
-                        <h3 id="chat-name" class="font-bold text-gray-800 text-lg leading-tight truncate hover:text-pink-600 transition"></h3>
+                        <h3 id="chat-name" class="font-bold text-gray-800 text-lg leading-tight truncate hover:text-pink-600 transition drop-shadow-sm"></h3>
                         <p id="chat-role" class="text-xs text-pink-400 mt-0.5 font-medium truncate"></p>
                     </div>
                     <!-- Updated Back Button with Confirmation -->
-                    <button onclick="backToSetup()" class="w-10 h-10 rounded-full bg-white border border-gray-100 text-gray-400 hover:bg-pink-50 hover:text-pink-500 hover:border-pink-100 flex items-center justify-center transition shadow-sm" title="返回設定 (自動儲存)">
+                    <button onclick="backToSetup()" class="w-10 h-10 rounded-full bg-white/80 border border-pink-100 text-gray-400 hover:bg-pink-50 hover:text-pink-500 hover:border-pink-200 flex items-center justify-center transition shadow-sm" title="返回設定 (自動儲存)">
                         <i class="fa-solid fa-arrow-left"></i>
                     </button>
                 </div>
                 
                 <!-- Chat Area with Pattern -->
-                <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar scroll-smooth" style="background-image: radial-gradient(#fce7f3 1px, transparent 1px); background-size: 20px 20px;"></div>
+                <div id="messages" class="flex-1 overflow-y-auto p-6 space-y-6 custom-scrollbar scroll-smooth chat-bg-pattern"></div>
                 
                 <!-- Smart Reply Container -->
-                <div id="suggestions-container" class="px-4 py-2 flex gap-2 overflow-x-auto custom-scrollbar min-h-[40px] items-center">
+                <div id="suggestions-container" class="px-4 py-2 flex gap-2 overflow-x-auto custom-scrollbar min-h-[40px] items-center bg-white/20 backdrop-blur-sm transition-colors duration-500">
                     <!-- Suggestions will appear here -->
                 </div>
 
-                <div class="bg-white p-4 border-t border-pink-100">
-                    <form id="chat-form" class="flex gap-2 items-end bg-gray-50 p-1.5 rounded-[1.5rem] border border-gray-200 focus-within:border-pink-300 focus-within:ring-4 focus-within:ring-pink-50 transition-all shadow-inner">
+                <div class="bg-white/60 p-4 border-t border-pink-100/50 backdrop-blur-md transition-colors duration-500" id="input-area">
+                    <form id="chat-form" class="flex gap-2 items-end bg-white/80 p-1.5 rounded-[1.5rem] border border-pink-100 focus-within:border-pink-300 focus-within:ring-4 focus-within:ring-pink-50 transition-all shadow-inner">
                         <button type="button" onclick="generateSmartReplies()" class="w-10 h-10 flex items-center justify-center text-purple-400 hover:text-purple-600 transition rounded-full hover:bg-purple-50" title="幫我想回覆 (Magic Reply)">
                             <i class="fa-solid fa-wand-magic-sparkles"></i>
                         </button>
                         <input type="text" id="msg-input" placeholder="輸入訊息..." autocomplete="off"
                                class="flex-1 bg-transparent px-2 py-3 focus:outline-none text-gray-700 placeholder-gray-400 max-h-24">
-                        <button type="submit" id="send-btn" class="w-11 h-11 bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full shadow-md flex items-center justify-center transition transform active:scale-90 mb-0.5 mr-0.5">
+                        <button type="submit" id="send-btn" class="w-11 h-11 bg-gradient-to-br from-pink-500 to-rose-500 hover:from-pink-600 hover:to-rose-600 text-white rounded-full shadow-md flex items-center justify-center transition transform active:scale-90 mb-0.5 mr-0.5 border border-white/20">
                             <i class="fa-solid fa-paper-plane text-sm"></i>
                         </button>
                     </form>
@@ -513,6 +741,7 @@
         let currentSessionId = null;
         let autoPlayAudio = false;
         let strictVoiceMode = true; // Default strict
+        let isVipMode = false; // Track VIP mode
         
         let currentVoiceName = 'Despina'; // Default Gemini voice
         
@@ -596,18 +825,25 @@
 
         async function speakText(text, btnElement) {
             const btnIcon = btnElement ? btnElement.querySelector('i') : document.querySelector('#test-voice-btn i');
-            const originalClass = btnIcon ? btnIcon.className : '';
+            const originalIconClass = btnIcon ? btnIcon.className : '';
             const statusDiv = document.getElementById('voice-status');
             
-            if(btnIcon) btnIcon.className = "fa-solid fa-circle-notch fa-spin";
+            if(btnElement) {
+                btnElement.classList.add('text-pink-600', 'bg-pink-100');
+                btnElement.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i>';
+            } else if(btnIcon) {
+                btnIcon.className = "fa-solid fa-circle-notch fa-spin";
+            }
             
             let cleanText = text.replace(/（.*?）/g, '').replace(/\(.*?\)/g, '').replace(/【.*?】/g, '').trim();
             if (!cleanText) {
-                 if(btnIcon) btnIcon.className = originalClass;
+                 if(btnElement) {
+                     btnElement.classList.remove('text-pink-600', 'bg-pink-100');
+                     btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                 } else if(btnIcon) btnIcon.className = originalIconClass;
                  return;
             }
             
-            // Gemini TTS (Pure, no modification)
             try {
                 if(statusDiv) statusDiv.innerText = "AI 語音生成中...";
                 
@@ -645,7 +881,10 @@
                 const audio = new Audio(audioUrl);
                 
                 audio.onended = () => {
-                    if(btnIcon) btnIcon.className = originalClass;
+                    if(btnElement) {
+                        btnElement.classList.remove('text-pink-600', 'bg-pink-100');
+                        btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                    } else if(btnIcon) btnIcon.className = originalIconClass;
                 };
                 audio.play();
                 if(statusDiv) statusDiv.innerText = "";
@@ -657,14 +896,16 @@
                     if(statusDiv) statusDiv.innerHTML = `<span class="text-red-500">❌ 語音失敗: ${e.message}</span>`;
                     alert(`AI 語音生成失敗：${e.message}\n(已開啟禁用備援模式)`);
                 } else {
-                    // Fallback (Optional, if user unchecked strict mode)
                     if(statusDiv) statusDiv.innerHTML = `<span class="text-red-400 animate-pulse">⚠️ 使用備用音訊</span>`;
                     window.speechSynthesis.cancel();
                     const utterance = new SpeechSynthesisUtterance(cleanText);
                     window.speechSynthesis.speak(utterance);
                 }
                 
-                if(btnIcon) btnIcon.className = originalClass;
+                if(btnElement) {
+                    btnElement.classList.remove('text-pink-600', 'bg-pink-100');
+                    btnElement.innerHTML = '<i class="fa-solid fa-volume-high"></i>';
+                } else if(btnIcon) btnIcon.className = originalIconClass;
             }
         }
 
@@ -683,7 +924,7 @@
             const role = document.getElementById('p-role').value;
             const tone = document.getElementById('p-tone').value;
             const relationship = document.getElementById('p-relationship').value;
-            const context = document.getElementById('p-context').value; // New
+            const context = document.getElementById('p-context').value;
             
             const previewMsg = chatHistory.length > 1 ? (chatHistory[chatHistory.length-1]?.parts?.[0]?.text || "新對話") : "新對話";
 
@@ -693,13 +934,14 @@
                 role: role,
                 tone: tone,
                 relationship: relationship,
-                context: context, // New
+                context: context,
                 history: chatHistory,
                 image: currentImageBase64,
                 mimeType: currentImageMimeType,
                 lastUpdated: Date.now(),
                 previewMsg: previewMsg,
-                profileData: profileData
+                profileData: profileData,
+                isVipMode: isVipMode // Save mode state
             };
 
             const allSessions = JSON.parse(localStorage.getItem('persona_sessions') || '{}');
@@ -747,12 +989,15 @@
             currentImageBase64 = s.image;
             currentImageMimeType = s.mimeType;
             profileData = s.profileData || profileData;
+            isVipMode = s.isVipMode || false;
+            
+            if (isVipMode) enableVipMode(); else disableVipMode();
             
             document.getElementById('p-name').value = s.name;
             document.getElementById('p-role').value = s.role;
             document.getElementById('p-tone').value = s.tone;
             document.getElementById('p-relationship').value = s.relationship || "";
-            document.getElementById('p-context').value = s.context || ""; // New
+            document.getElementById('p-context').value = s.context || "";
             
             document.getElementById('preview-image').src = `data:${s.mimeType};base64,${s.image}`;
             document.getElementById('preview-image').classList.remove('hidden');
@@ -796,6 +1041,8 @@
             currentSessionId = null;
             chatHistory = [];
             profileData = { age: "未知", location: "未知", interests: [], bio: "這個人很神秘，還沒有寫自我介紹..." };
+            isVipMode = false;
+            disableVipMode();
             
             document.getElementById('setup-panel').classList.remove('hidden');
             document.getElementById('chat-panel').classList.add('hidden');
@@ -809,7 +1056,7 @@
             document.getElementById('p-role').value = '';
             document.getElementById('p-tone').value = '';
             document.getElementById('p-relationship').value = '';
-            document.getElementById('p-context').value = ''; // New
+            document.getElementById('p-context').value = ''; 
             document.getElementById('preview-image').classList.add('hidden');
             document.getElementById('upload-hint').classList.remove('hidden');
             document.getElementById('analysis-status').innerHTML = '準備就緒，期待與他/她相遇...';
@@ -820,6 +1067,218 @@
             document.getElementById('suggestions-container').innerHTML = '';
         };
 
+        // --- Nightclub Logic ---
+        function openNightclubMode() {
+            document.getElementById('nightclub-modal').classList.remove('hidden');
+            // Clear previous request if opening fresh
+            document.getElementById('hostess-pref').value = "";
+            refreshHostesses();
+        }
+
+        function closeNightclubMode() {
+            document.getElementById('nightclub-modal').classList.add('hidden');
+        }
+
+        function enableVipMode() {
+            isVipMode = true;
+            document.body.classList.add('vip-mode');
+            const header = document.getElementById('chat-header');
+            header.classList.remove('bg-white/70');
+            header.classList.add('bg-black/50', 'text-white', 'border-purple-500/50');
+            
+            document.getElementById('input-area').classList.remove('bg-white/60', 'border-pink-100/50');
+            document.getElementById('input-area').classList.add('bg-black/60', 'border-purple-500/30');
+            
+            document.getElementById('suggestions-container').classList.remove('bg-white/20');
+            document.getElementById('suggestions-container').classList.add('bg-black/40');
+            
+            document.getElementById('app-title').innerText = "VIP Lounge";
+            document.getElementById('app-title').classList.add('text-purple-300');
+        }
+
+        function disableVipMode() {
+            isVipMode = false;
+            document.body.classList.remove('vip-mode');
+            const header = document.getElementById('chat-header');
+            header.classList.add('bg-white/70');
+            header.classList.remove('bg-black/50', 'text-white', 'border-purple-500/50');
+            
+            document.getElementById('input-area').classList.add('bg-white/60', 'border-pink-100/50');
+            document.getElementById('input-area').classList.remove('bg-black/60', 'border-purple-500/30');
+            
+            document.getElementById('suggestions-container').classList.add('bg-white/20');
+            document.getElementById('suggestions-container').classList.remove('bg-black/40');
+            
+            document.getElementById('app-title').innerText = "PersonaChat";
+            document.getElementById('app-title').classList.remove('text-purple-300');
+        }
+
+        async function refreshHostesses() {
+            const container = document.getElementById('hostess-container');
+            const preference = document.getElementById('hostess-pref').value.trim();
+            
+            container.innerHTML = '<div class="col-span-1 md:col-span-3 flex justify-center items-center py-20 text-purple-300 flex-col gap-4"><i class="fa-solid fa-circle-notch fa-spin text-4xl"></i><p>正在安排人選...</p></div>';
+            
+            try {
+                const url = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
+                
+                let promptContext = "Context: Generate a diverse group of 3 different ethnicities from around the world (Asian, Latina, European, Mixed, etc).";
+                if (preference) {
+                    promptContext = `Context: User requested specific type: "${preference}". Generate 3 characters matching this description.`;
+                }
+
+                const prompt = `Generate 3 distinct female characters for a Nightclub VIP Hostess scenario. 
+                ${promptContext}
+                Return JSON array. Each object: 
+                - name (Traditional Chinese name preferred or translated), 
+                - age, 
+                - appearance (detailed visual description for photorealistic image generation, including ethnicity, hair, style), 
+                - personality (Traditional Chinese), 
+                - specialty (Traditional Chinese, e.g. 唱歌, 調酒, 傾聽), 
+                - greeting (Traditional Chinese, flirtatious). 
+                Output JSON ONLY.`;
+                
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], safetySettings: SAFETY_SETTINGS })
+                });
+                
+                const data = await response.json();
+                let jsonStr = data.candidates[0].content.parts[0].text.replace(/```json/g, '').replace(/```/g, '').trim();
+                const candidates = JSON.parse(jsonStr);
+                
+                container.innerHTML = '';
+                candidates.forEach((c, index) => {
+                    const card = document.createElement('div');
+                    card.className = 'hostess-card glass-panel bg-black/60 p-4 rounded-2xl flex flex-col gap-3 relative overflow-hidden group cursor-pointer';
+                    card.innerHTML = `
+                        <div class="h-48 rounded-xl bg-gray-800 relative overflow-hidden">
+                            <div class="absolute inset-0 flex items-center justify-center text-gray-500 text-xs" id="img-placeholder-${index}">
+                                <i class="fa-solid fa-image mr-1"></i> 生成照片中...
+                            </div>
+                            <img id="hostess-img-${index}" class="w-full h-full object-cover hidden transition-opacity duration-500">
+                            <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black via-black/70 to-transparent p-3 pt-8">
+                                <h3 class="text-xl font-bold text-white">${c.name} <span class="text-sm font-normal opacity-70">${c.age}歲</span></h3>
+                            </div>
+                        </div>
+                        <div class="flex-1">
+                            <div class="flex gap-2 mb-2">
+                                <span class="px-2 py-1 rounded bg-purple-900/50 text-purple-300 text-[10px] border border-purple-500/30">${c.personality}</span>
+                                <span class="px-2 py-1 rounded bg-pink-900/50 text-pink-300 text-[10px] border border-pink-500/30">${c.specialty}</span>
+                            </div>
+                            <p class="text-sm text-gray-300 italic">"${c.greeting}"</p>
+                        </div>
+                        <button class="w-full bg-gradient-to-r from-purple-600 to-pink-600 text-white py-2 rounded-lg font-bold hover:opacity-90 transition mt-2">
+                            選擇她 <i class="fa-solid fa-arrow-right ml-1"></i>
+                        </button>
+                    `;
+                    
+                    // Generate Image for this card
+                    generateHostessImage(c.appearance, index);
+                    
+                    // Selection Logic
+                    card.onclick = () => selectHostess(c, index);
+                    
+                    container.appendChild(card);
+                });
+                
+            } catch (e) {
+                console.error(e);
+                container.innerHTML = '<div class="col-span-3 text-center text-red-400">生成失敗，請重試</div>';
+            }
+        }
+
+        async function generateHostessImage(description, index) {
+            try {
+                const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+                // Enhanced Prompt for Realism
+                const prompt = `Real life photo, photorealistic portrait of a beautiful woman in a high-end nightclub setting, ${description}, soft cinematic lighting, 8k, highly detailed, shot on 35mm lens, natural skin texture.`;
+                
+                const response = await fetch(imagenUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ instances: [{ prompt: prompt }], parameters: { sampleCount: 1 } })
+                });
+                
+                const data = await response.json();
+                const base64 = data.predictions[0].bytesBase64Encoded;
+                
+                const img = document.getElementById(`hostess-img-${index}`);
+                const placeholder = document.getElementById(`img-placeholder-${index}`);
+                if (img) {
+                    img.src = `data:image/png;base64,${base64}`;
+                    img.classList.remove('hidden');
+                    if(placeholder) placeholder.classList.add('hidden');
+                }
+                
+                // Store temporarily
+                window[`hostess_img_${index}`] = base64;
+                
+            } catch(e) {
+                console.warn("Image gen failed", e);
+            }
+        }
+
+        function selectHostess(c, index) {
+            const base64 = window[`hostess_img_${index}`];
+            if (!base64) return alert("請等待照片生成完畢");
+            
+            // Setup Session
+            currentSessionId = 'vip_' + Date.now();
+            currentImageBase64 = base64;
+            currentImageMimeType = 'image/png';
+            profileData = { age: c.age, location: "VIP Lounge", bio: c.greeting, interests: [c.specialty, "Party", "Romance"] };
+            
+            document.getElementById('p-name').value = c.name;
+            document.getElementById('p-role').value = "Nightclub Hostess";
+            document.getElementById('p-relationship').value = "Hostess & VIP Customer";
+            document.getElementById('p-tone').value = c.personality;
+            document.getElementById('p-context').value = "我们在私人包厢里，燈光昏暗，氣氛曖昧。";
+            
+            document.getElementById('chat-name').innerText = c.name;
+            document.getElementById('chat-role').innerText = "VIP Hostess";
+            document.getElementById('chat-avatar').src = `data:image/png;base64,${base64}`;
+            document.getElementById('preview-image').src = `data:image/png;base64,${base64}`;
+            
+            enableVipMode();
+            
+            // Start Chat
+            chatHistory = [
+                {
+                    role: "user",
+                    parts: [{ text: `【系統指令：啟動夜店包廂模式】
+目標：你現在是 ${c.name}，一位在高級夜店工作的公關。
+性格：${c.personality}。特長：${c.specialty}。
+對象：我是你的 VIP 客人。
+規則：
+1. 你的語氣要極度迷人、挑逗，或是溫柔體貼，致力於讓客人開心。
+2. 這是成人向的虛擬互動，請放開拘束，展現成熟的魅力。
+3. 偶爾可以主動提議喝酒、玩遊戲或肢體接觸（用旁白描寫）。
+4. 務必使用 Emoji。
+5. 第一句話請用這句開場白：${c.greeting}` }]
+                },
+                {
+                    role: "model",
+                    parts: [{ text: c.greeting }]
+                }
+            ];
+            
+            document.getElementById('messages').innerHTML = '';
+            appendMessage(c.greeting, 'model', 1);
+            saveSession();
+            
+            closeNightclubMode();
+            document.getElementById('setup-panel').classList.add('hidden');
+            document.getElementById('chat-panel').classList.remove('hidden');
+            document.getElementById('chat-panel').classList.add('flex');
+            
+            document.getElementById('mind-read-btn').classList.remove('hidden');
+            document.getElementById('plot-twist-btn').classList.remove('hidden');
+            document.getElementById('relation-btn').classList.remove('hidden');
+        }
+
+        // --- Existing functions ---
         async function scanAndConnect() {
             const input = document.getElementById('api-key-input').value.trim();
             if (!input) return alert("請輸入 API Key");
@@ -869,7 +1328,7 @@
                 btn.innerHTML = "進入戀愛空間";
                 btn.onclick = enterSystem;
                 btn.disabled = false;
-                btn.className = "w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-2xl transition transform active:scale-95 shadow-lg";
+                btn.className = "w-full bg-green-500 hover:bg-green-600 text-white font-bold py-3 rounded-2xl transition transform active:scale-95 shadow-lg border border-white/20";
                 selectedModel = chatModels[0];
                 log(`配對成功！找到 ${chatModels.length} 個可用頻率`, 'success');
 
@@ -926,6 +1385,82 @@
             
             analyzeImageRaw(base64Data, file.type);
         });
+
+        // --- New Image Generation Function ---
+        async function generatePersonaImage() {
+            const promptInput = document.getElementById('image-prompt');
+            const genBtn = document.getElementById('gen-btn');
+            let userPrompt = promptInput.value.trim();
+            
+            if (!userPrompt) return alert("請輸入描述！");
+            
+            genBtn.disabled = true;
+            genBtn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> 正在施展魔法...';
+            
+            try {
+                // Step 1: Optimize prompt using Gemini Text model (English is better for Imagen)
+                const optimizeUrl = `https://generativelanguage.googleapis.com/v1beta/models/${selectedModel}:generateContent?key=${apiKey}`;
+                const optimizePayload = {
+                    contents: [{ parts: [{ text: `Translate and optimize this image description into a detailed English prompt for an AI image generator (photorealistic style, portrait): "${userPrompt}". Output ONLY the English prompt.` }] }]
+                };
+                
+                const optResponse = await fetch(optimizeUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(optimizePayload)
+                });
+                
+                const optData = await optResponse.json();
+                let optimizedPrompt = optData.candidates?.[0]?.content?.parts?.[0]?.text || userPrompt;
+                console.log("Optimized Prompt:", optimizedPrompt);
+
+                // Step 2: Generate Image using Imagen
+                const imagenUrl = `https://generativelanguage.googleapis.com/v1beta/models/imagen-4.0-generate-001:predict?key=${apiKey}`;
+                const imagenPayload = {
+                    instances: [{ prompt: optimizedPrompt }],
+                    parameters: { sampleCount: 1 }
+                };
+
+                const imgResponse = await fetch(imagenUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(imagenPayload)
+                });
+
+                const imgData = await imgResponse.json();
+                
+                if (!imgResponse.ok) {
+                    throw new Error(imgData.error?.message || "Image Generation Failed");
+                }
+
+                // Extract Base64
+                const base64Image = imgData.predictions?.[0]?.bytesBase64Encoded;
+                if (!base64Image) throw new Error("No image data returned");
+
+                // Update UI with generated image
+                currentImageBase64 = base64Image;
+                currentImageMimeType = "image/png";
+                currentSessionId = 'session_' + Date.now();
+
+                const imgPreview = document.getElementById('preview-image');
+                imgPreview.src = `data:image/png;base64,${base64Image}`;
+                imgPreview.classList.remove('hidden');
+                document.getElementById('upload-hint').classList.add('hidden');
+                
+                // Close modal
+                document.getElementById('image-gen-modal').classList.add('hidden');
+                
+                // Analyze the generated image
+                analyzeImageRaw(base64Image, "image/png");
+
+            } catch (e) {
+                console.error(e);
+                alert("圖片生成失敗: " + e.message);
+            } finally {
+                genBtn.disabled = false;
+                genBtn.innerHTML = '<i class="fa-solid fa-paint-brush"></i> 開始生成';
+            }
+        }
 
         async function analyzeImageRaw(base64, mimeType) {
             const statusDiv = document.getElementById('analysis-status');
@@ -1064,7 +1599,7 @@
             if (profileData.interests && profileData.interests.length > 0) {
                 profileData.interests.forEach(interest => {
                     const tag = document.createElement('span');
-                    tag.className = 'interest-tag';
+                    tag.className = 'interest-tag text-xs text-pink-600 bg-pink-100 px-2 py-1 rounded-full border border-pink-200';
                     tag.innerText = interest;
                     tagsContainer.appendChild(tag);
                 });
@@ -1152,6 +1687,7 @@
                 document.getElementById('mind-read-btn').classList.add('hidden');
                 document.getElementById('plot-twist-btn').classList.add('hidden');
                 document.getElementById('relation-btn').classList.add('hidden');
+                if(isVipMode) disableVipMode(); // Exit VIP visual mode
             }
         };
 
@@ -1516,8 +2052,8 @@
                     <button class="edit-btn text-pink-300 hover:text-pink-500 p-2 rounded-full text-xs transition" onclick="editMsg(${index})" title="修改">
                         <i class="fa-solid fa-pen-to-square"></i>
                     </button>
-                    <div id="msg-${index}" class="bg-gradient-to-br from-pink-500 to-rose-500 text-white px-5 py-3 rounded-2xl rounded-tr-sm shadow-md text-sm md:text-base leading-relaxed text-left max-w-[85%]">
-                        ${escapeHtml(text)}
+                    <div id="msg-${index}" class="bubble-user text-white px-5 py-3 rounded-2xl rounded-tr-sm shadow-md text-sm md:text-base leading-relaxed text-left max-w-[85%]">
+                        <div class="relative z-10">${escapeHtml(text)}</div>
                     </div>
                 `;
             } else if (sender === 'error') {
@@ -1528,8 +2064,8 @@
                 const avatarSrc = document.getElementById('preview-image').src || document.getElementById('chat-avatar').src; 
                 if (typeof index === 'number') div.setAttribute('data-index', index);
                 div.innerHTML = `
-                    <img src="${avatarSrc}" class="w-10 h-10 rounded-full object-cover border border-pink-100 shadow-sm mb-1 shrink-0" onclick="showProfile()" style="cursor: pointer">
-                    <div id="msg-${index}" class="bg-pink-50 text-gray-800 border border-pink-100 px-5 py-3 rounded-2xl rounded-tl-sm shadow-sm text-sm md:text-base leading-relaxed text-left max-w-[85%] hover:shadow-md transition-shadow">
+                    <img src="${avatarSrc}" class="w-10 h-10 rounded-full object-cover border border-white shadow-sm mb-1 shrink-0" onclick="showProfile()" style="cursor: pointer">
+                    <div id="msg-${index}" class="bubble-bot px-5 py-3 rounded-2xl rounded-tl-sm text-sm md:text-base leading-relaxed text-left max-w-[85%] hover:shadow-lg transition-shadow">
                         ${markedParse(text)}
                     </div>
                     ${speakBtnHtml}
@@ -1546,7 +2082,7 @@
             div.id = id;
             div.className = 'flex justify-start items-end gap-3 mb-6';
             const avatarSrc = document.getElementById('preview-image').src || document.getElementById('chat-avatar').src;
-            div.innerHTML = `<img src="${avatarSrc}" class="w-10 h-10 rounded-full object-cover border border-pink-100 shadow-sm mb-1 opacity-80"><div class="bg-white border border-pink-50 px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex gap-1.5 items-center"><div class="w-2 h-2 bg-pink-300 rounded-full typing-dot"></div><div class="w-2 h-2 bg-pink-400 rounded-full typing-dot"></div><div class="w-2 h-2 bg-pink-500 rounded-full typing-dot"></div></div>`;
+            div.innerHTML = `<img src="${avatarSrc}" class="w-10 h-10 rounded-full object-cover border border-white shadow-sm mb-1 opacity-80"><div class="bubble-bot px-4 py-3 rounded-2xl rounded-tl-sm shadow-sm flex gap-1.5 items-center"><div class="w-2 h-2 bg-pink-300 rounded-full typing-dot"></div><div class="w-2 h-2 bg-pink-400 rounded-full typing-dot"></div><div class="w-2 h-2 bg-pink-500 rounded-full typing-dot"></div></div>`;
             container.appendChild(div);
             container.scrollTop = container.scrollHeight;
             return id;
